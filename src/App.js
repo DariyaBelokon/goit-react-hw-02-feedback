@@ -1,51 +1,91 @@
-// import logo from './logo.svg';
 import './App.css';
 import React from 'react';
-import Counter from './components/Counter/Counter';
+import { Component } from 'react';
+import Statistics from 'components/Statistics/Statistics';
+import Notification from 'components/Notification/Notification';
+import Section from 'components/Section/Section';
+import FeedbackOptions from 'components/FeedbackOptions/FeedbackOptions';
 
-const colorPickerOptions = [
-  { label: 'red', color: '#F44336' },
-  { label: 'green', color: '#4CAF50' },
-  { label: 'blue', color: '#2196F3' },
-  { label: 'grey', color: '#607D8B' },
-  { label: 'pink', color: '#E91E63' },
-  { label: 'indigo', color: '#3F51B5' },
-];
+class App extends Component {
+  state = {
+    good: 0,
+    neutral: 0,
+    bad: 0,
+  };
+  onLeaveFeedback = e => {
+    const newFeedback = e.target.name;
+    this.setState(prevState => ({
+      [newFeedback]: prevState[newFeedback] + 1,
+    }));
+  };
 
-const App = () => (
-  <>
-    <h1>Состояние компонента</h1>
-    <Counter initialValue={10} />
-  </>
-);
+  countTotalFeedback = () => {
+    let total = 0;
+    total = this.state.good + this.state.neutral + this.state.bad;
+    return total;
+  };
+  countPositiveFeedbackPercentage = () =>
+    (this.state.good / this.countTotalFeedback()) * 100;
+
+  countNoFeedback = () =>
+    this.state.good === 0 && this.state.neutral === 0 && this.state.bad === 0
+      ? true
+      : false;
+
+  render() {
+    const {
+      onLeaveFeedback,
+      countTotalFeedback,
+      countPositiveFeedbackPercentage,
+      countNoFeedback,
+    } = this;
+    const { good, neutral, bad } = this.state;
+    const objKey = Object.keys(this.state);
+    return (
+      <>
+        <Section title="Please leave feedback">
+          <FeedbackOptions options={objKey} onLeaveFeedback={onLeaveFeedback} />
+        </Section>
+
+        <Section title="Statistics">
+          {countNoFeedback() ? (
+            <Notification message="No feedback given" />
+          ) : (
+            <Statistics
+              good={good}
+              neutral={neutral}
+              bad={bad}
+              total={countTotalFeedback()}
+              positivePercentage={countPositiveFeedbackPercentage()}
+            />
+          )}
+        </Section>
+      </>
+    );
+  }
+}
 
 export default App;
 
-// import UserProfile from './components/user-profile/user-profile';
-// import user from './user-profile.json';
+// <button type="button" className="button__good" onClick={onLeaveFeedback}>
+//   Good
+// </button>
+// <button type="button" className="button__neutral" onClick={onLeaveFeedback}>
+//   Neutral
+// </button>
+// <button type="button" className="button__bad" onClick={onLeaveFeedback}>
+//   Bad
+// </button> *//
 
-// import Statistics from './components/statistics/statistics';
-// import statisticalData from './statistical-data.json';
-
-// import Friends from './components/friends/friends';
-// import friends from './friends.json';
-
-// import TransactionHistory from './components/TransactionHistory/TransactionHistory';
-// import transactions from './transactions.json';
-
-// export default function App() {
-//   return (
-//     <div>
-//       <UserProfile
-//         name={user.name}
-//         tag={user.tag}
-//         location={user.location}
-//         avatar={user.avatar}
-//         stats={user.stats}
-//       />
-//       <Statistics title="Upload stats" stats={statisticalData} />
-//       <Friends friends={friends} />,
-//       <TransactionHistory items={transactions} />;
-//     </div>
-//   );
-// }
+// handleIncrGood = () => { this.setState(prevState => ({
+//     good: prevState.good + 1,
+// }))
+// };
+// handleIncrNeutral = () => { this.setState(prevState => ({
+//     neutral: prevState.neutral + 1,
+// }))
+// };
+// handleIncrBad  = () => { this.setState(prevState => ({
+//     bad: prevState.bad + 1,
+// }))
+// };

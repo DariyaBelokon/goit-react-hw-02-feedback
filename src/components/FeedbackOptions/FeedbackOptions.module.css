@@ -1,0 +1,13 @@
+.btn {
+  margin-right: 14px;
+  width: 80px;
+  height: 25px;
+  color: rgba(255, 255, 255, 0.952);
+  border-radius: 10px;
+  font-weight: 400;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+  background: rgb(127, 19, 170);
+  border: none;
+}
